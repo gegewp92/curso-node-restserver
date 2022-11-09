@@ -39,7 +39,8 @@ const UsuarioSchema = Schema({
 //Borrar password. Sobreescribo un metodo
 UsuarioSchema.methods.toJSON = function(){ //Uso una funcion normal porque necesito usar mi objeto this y hacer referencia a mi instancia
 
-    const { __v, password, ...usuario } = this.toObject(); //El operador ... unifica el resto de argumentos de mi this.toObject() en uno solo que sea usuario
+    const { __v, password, _id, ...usuario } = this.toObject(); //El operador ... unifica el resto de argumentos de mi this.toObject() en uno solo que sea usuario
+    usuario.uid = _id;  //cambio visualmente _id por uid
     return usuario;
 }
 

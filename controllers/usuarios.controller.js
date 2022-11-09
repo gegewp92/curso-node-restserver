@@ -93,9 +93,12 @@ const usuariosDelete = async(req, res = response)=> {
 
     const usuario = await Usuario.findByIdAndUpdate(id, {estado: false}); // recibe dos paramentros, el id y el estado que quiero actualizar
 
+    //const usuarioAutenticado = req.usuario;
+
     res.json({
         msg: 'get DELETE - controller',
         usuario
+        //usuarioAutenticado
     });
 }
 

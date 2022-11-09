@@ -4,11 +4,17 @@ const { check } = require('express-validator');
 
 const router = Router();
 
-//Importo mis funciones
-const { verificarCampos } = require('../middlewares/verificar-campos');
+//Middlewares personalizados
+// const { verificarCampos } = require('../middlewares/verificar-campos');
+// const { validarJWT } = require('../middlewares/validar-jwt');
+// const { esAdminRole, tieneRole } = require('../middlewares/validar-roles');
+const { verificarCampos, validarJWT, esAdminRole, tieneRole } = require('../middlewares'); //como en html, va a llamar al index.js
+
 const { esRoleValido, emailExiste, existeUsuarioPorId } = require('../helpers/db-validators');
 
+//Importo mis funciones
 const { usuariosGet, usuariosPut, usuariosPost, usuariosDelete, usuariosPatch } = require('../controllers/usuarios.controller');
+
 
 //GET
 router.get('/', usuariosGet ); // Llamo a la funcion por referencia, no la ejecuto -> usuariosGet()
@@ -38,6 +44,9 @@ router.post('/', [
 
 //DELETE
 router.delete('/:id', [
+    validarJWT,
+    //esAdminRole,
+    tieneRole('ADMIN_ROLE', 'USER_ROLE', 'VENTAS_ROLE'),  // le paso parametros a mi middleware
     check('id', 'No es un ID valido').isMongoId(),
     check('id').custom(existeUsuarioPorId),
     verificarCampos
