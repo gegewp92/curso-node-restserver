@@ -4,11 +4,99 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso denegado</title>
+    <title>Google Sign-in</title>
 </head>
 <body>
 
-    <h1>Acceso Denegado</h1>
+    <h1>Google Sign-in</h1>
+    <hr>
+
+    <div id="g_id_onload"
+         data-client_id="136457339668-3556gcbf86cd423jhfskr663l7m8l1qe.apps.googleusercontent.com"
+         data-callback="handleCredentialResponse"
+         data-auto_prompt="false">
+    </div>
+
+    <div class="g_id_signin"
+         data-type="standard"
+         data-size="large"
+         data-theme="outline"
+         data-text="sign_in_with"
+         data-shape="rectangular"
+         data-logo_alignment="left">
+    </div>
+
+    <br>
+
+    <button id="google_signout"> 
+        Signout
+    </button>
+
+      
+    <script src="https://accounts.google.com/gsi/client" async defer></script> <!-- libreria necesaria de google authentication -->
+
+    <script>
+        function handleCredentialResponse(response) {
+
+            //const responsePayload = response.credential;
+
+           // Google token: ID_TOKEN
+           //console.log('id_token: ', response.credential);
+
+           const body = {id_token : response.credential};
+
+           fetch( 'http://localhost:8080/api/auth/google',{
+                method: 'POST',
+                headers: {
+                    'Content-Type':'application/json'
+                },
+                body: JSON.stringify(body)
+           })
+                .then( resp => resp.json()) //readableString, lo paso a json
+                .then( data => {
+                    console.log(data);  
+                    // En este punto si tuve una respuesta con la data pase la authentication de google
+                    // 1. guardo en el localStorage el correo (necesario para hacer el logout):
+                    localStorage.setItem('email', data.usuario.correo);
+                })
+                .catch(console.warn);
+            
+        }
+
+        //Boton logout
+        const button = document.getElementById('google_signout');
+        button.onclick = () => {
+
+            //console.log(google.accounts.id);   La que nos interesa es revoke y disableAutoSelect
+
+            // PromptMomentNotification: function Co(a)​
+            // cancel: function ()​
+            // disableAutoSelect: function bo()​
+            // initialize: function Xn(a)​
+            // intermediate: Object { verifyParentOrigin: Sm(a, b, c), notifyParentResize: $m(a), notifyParentClose: an()
+            // , … }
+            // ​
+            // prompt: function Yn(a, b, c)​
+            // renderButton: function $n(a, b, c)​
+            // revoke: function (a, b)​
+            // setLogLevel: function (a)​
+            // storeCredential: function (a, b)
+
+            google.accounts.id.disableAutoSelect();  // recomendable siempre deshabilitar
+
+            // 2. Una vez que tengo en el localStorage el correo puedo hacer un revoke
+            //localStorage.getItem('email');
+            google.accounts.id.revoke( localStorage.getItem('email') , done => {
+
+                localStorage.clear(); //Limpieza del correo en el localStorage
+                location.reload(); //recargo la pagina vaciar cualquier cosa que tengamos en nuestro estado de la app
+            })
+        }
+
+
+    </script>
+      
+
     
 </body>
 </html>
