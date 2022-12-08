@@ -1,5 +1,6 @@
-const Role = require('../models/role');
-const Usuario = require('../models/usuario');
+const { Role, Usuario, Categoria, Producto } = require('../models');
+// const Role = require('../models/role');
+// const Usuario = require('../models/usuario');
 
 // Validamos el rol contra una base de datos
 const esRoleValido = async(rol = '') => { //con custom hacemos una verificacion personalizada. Custom recibe como argumento el valor del body que quiero evaluar. En este caso el rol le asignamos un valor por defecto (vacio) en caso de que no venga para que no afecte la verificacion personalizada
@@ -26,8 +27,41 @@ const existeUsuarioPorId = async(id) => {
     }
 }
 
+
+/**
+ *  Validacion de Categorias contra DB
+ */
+
+
+//Verificar si existe la categoria por el ID
+const existeCategoriaPorId = async(id) => {
+
+    const existeCategoria = await Categoria.findById(id);
+    if(!existeCategoria){
+        throw new Error(`No existe la categoria con el id: ${id}`);  // este es un error personalizado que va a atrapar el custom(). NO rompe la aplicacion
+    }
+}
+
+
+
+/**
+ *  Validacion de Productos contra DB
+ */
+
+
+//Verificar si existe la categoria por el ID
+const existeProductoPorId = async(id) => {
+
+    const existeProducto = await Producto.findById(id);
+    if(!existeProducto){
+        throw new Error(`No existe el producto con el id: ${id}`);  // este es un error personalizado que va a atrapar el custom(). NO rompe la aplicacion
+    }
+}
+
 module.exports = {
     esRoleValido,
     emailExiste,
-    existeUsuarioPorId
+    existeUsuarioPorId,
+    existeCategoriaPorId,
+    existeProductoPorId
 }
