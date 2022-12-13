@@ -27,7 +27,9 @@ const ProductoSchema = new Schema({
         required: true
     },
     descripcion:{ type: String },   //breve descripcion del producto
-    disponible:{ type: Boolean, default: true }  // ejemplo: disponible true/false por temporada
+    disponible:{ type: Boolean, default: true },  // ejemplo: disponible true/false por temporada
+    img: { type: String }
+
 })
 
 //Borrar estado. Sobreescribo un metodo

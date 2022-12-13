@@ -58,10 +58,29 @@ const existeProductoPorId = async(id) => {
     }
 }
 
+
+
+/**
+ *  Validar colecciones permitidas para actualizar
+ */
+const coleccionesPermitidas = ( coleccion = '', colecciones = [] ) => {
+
+    const incluida = colecciones.includes( coleccion );
+
+    if(!incluida){
+        throw new Error (`Esa coleccion ${ coleccion } no esta permitida. Las colecciones permitidas son: ${ colecciones }`);
+    }
+
+    return true;  //regreso un true por el custom de mi route
+}
+
+
+
 module.exports = {
     esRoleValido,
     emailExiste,
     existeUsuarioPorId,
     existeCategoriaPorId,
-    existeProductoPorId
+    existeProductoPorId,
+    coleccionesPermitidas
 }

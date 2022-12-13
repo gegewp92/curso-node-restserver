@@ -1,5 +1,7 @@
 const cors = require('cors');
 const express = require('express');
+const fileUpload = require('express-fileupload');
+
 const { dbConnection } = require('../database/config');
 //const app = express()
 
@@ -15,6 +17,7 @@ class Server{
         this.categoriasPath     = '/api/categorias';
         this.productosPath      = '/api/productos';
         this.usuariosPath       = '/api/usuarios';
+        this.uploadsPath        = '/api/uploads';
         
         //Conectar a la DB
         this.conectarDB();
@@ -42,6 +45,13 @@ class Server{
         //Directorio publico
         this.app.use( express.static('public') );
 
+        //fileUpload - Carga de archivos
+        this.app.use( fileUpload({
+            useTempFiles : true,
+            tempFileDir : '/tmp/',
+            createParentPath: true  //crea una carpeta en el directorio especificado si no existe. Del metodo .mv
+        }) );
+
     }
 
     routes(){
@@ -51,7 +61,7 @@ class Server{
         this.app.use(this.categoriasPath, require('../routes/categorias.routes')); //    '/api/categorias' mi nueva ruta para usar el Router
         this.app.use(this.productosPath, require('../routes/productos.routes')); //      '/api/productos' mi nueva ruta para usar el Router
         this.app.use(this.usuariosPath, require('../routes/usuarios.routes')); //        '/api/usuarios' mi nueva ruta para usar el Router
-        
+        this.app.use(this.uploadsPath, require('../routes/uploads.routes')); //        '/api/uploads' mi nueva ruta para usar el Router
     }
 
     listen(){
